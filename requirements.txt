@@ -3,3 +3,4 @@ SQLAlchemy
 graphene_sqlalchemy
 Flask-GraphQL
 pylint
+flask-sqlalchemy

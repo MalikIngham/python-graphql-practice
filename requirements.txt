@@ -1,0 +1,5 @@
+flask
+SQLAlchemy
+graphene_sqlalchemy
+Flask-GraphQL
+pylint

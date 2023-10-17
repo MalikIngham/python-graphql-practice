@@ -30,10 +30,10 @@ def init_db():
     engineer = Role(name="engineer")
     db_session.add(engineer)
 
-    peter = Employee(name="Peter", department=engineering, role=engineer)
+    peter = Employee(name="Peter", department=[engineering], role=[engineer])
     db_session.add(peter)
-    roy = Employee(name="Roy", department=engineering, role=engineer)
+    roy = Employee(name="Roy", department=[engineering], role=[engineer])
     db_session.add(roy)
-    tracy = Employee(name="Tracy", department=hr, role=manager)
+    tracy = Employee(name="Tracy", department=[hr], role=[manager])
     db_session.add(tracy)
     db_session.commit()

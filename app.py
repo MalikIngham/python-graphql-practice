@@ -21,44 +21,24 @@ app.add_url_rule(
 
 @app.route('/')
 def hello():
-    # Base.metadata.create_all(bind=engine)
-    # engineering = Department(name='Engineering')
-    # db_session.add(engineering)
-    # hr = Department(name='Human Resources')
-    # db_session.add(hr)
-
-    # peter = Employee(name ='peter', department=engineering)
-    # db_session.add(peter)
-
-    # roy = Employee(name ='roy', department=engineering)
-    # db_session.add(roy)
-
-    # tracy = Employee(name ='tracy', department=engineering)
-    # db_session.add(tracy)
-
-    # db_session.commit()
-    # print('temp')
-    # print(models.Department)
-
     return "<p>Database populated</p>"
 
 @app.route('/test')
 def test():
-    engineering = DepartmentModel(name='Engineering')
+    # engineering = DepartmentModel(name='Engineering')
     medical = DepartmentModel(name='Medical')
     db_session.add(medical)
-    tommy = EmployeeModel(name='tommy', department= [medical])
+    tommy = EmployeeModel(name='tommy')
     db_session.add(tommy)
-    manager = RoleModel(name='manager', department=[engineering])
+    manager = RoleModel(name='manager', department_id=1)
     db_session.add(manager)
     db_session.commit()
     return 'TEST'
 
-@app.route('/get')
-def get():
+@app.route('/get-all-departments')
+def get_all_departments():
     try:
-        departments = [DepartmentModel.to_dict() for dept in DepartmentModel.query.all()]
-        print(departments)
+        departments = [dept.to_dict() for dept in DepartmentModel.query.all()]
         payload = {
             'success': True,
             'departments': departments
@@ -70,6 +50,53 @@ def get():
         }
 
     return payload
+
+@app.route('/output-departments')
+def output_departments():
+    payload = get_all_departments()
+    # payload['departments'][1]['string']
+    return payload
+
+@app.route('/get-engineer')
+def get_engineer(employee_id: int):
+    try:
+        engineers = EmployeeModel.query.get(employee_id).to_dict()
+        print('engineers: ', engineers)
+
+        response = {
+            'success': True,
+            'engineers': engineers
+        }
+
+    except Exception as error:
+        response = {
+            'success': False,
+            'error': [str(error)]
+        }
+
+    return response
+
+@app.route('/get-all-employees')
+def all_employees():
+    try: 
+        employees = [employee.to_dict() for employee in EmployeeModel.query.all()]
+        response = {
+            'success': True,
+            'employee': employees
+        }
+    except Exception as error:
+        response = {
+            'success': False,
+            'error': [str(error)]
+        }
+
+    return response
+
+@app.route('/output')
+def output_engineers():
+    response = get_engineer(1)
+    print('response: ', response)
+    return response
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):

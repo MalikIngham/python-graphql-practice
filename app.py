@@ -17,33 +17,16 @@ app.add_url_rule(
         graphiql=True
         )
 )   
-# @app.register_blueprint(routes.main.bp, url_prefix='/main')
 
 @app.route('/')
 def hello():
-    departments = models.Department.query.all()
-    employees = models.Employee.query.all()
-    print(employees)
-    # engineering = models.Department(name='Engineering')
-    # db_session.add(engineering)
-    # db_session.commit()
-    # departments = models.Department.query.all()
-    
-    # employee = models.Employee(name='Candace', department_id=engineering.department_id)
-    # db_session.add(employee)
-    # db_session.commit()
-
-    return "<p>Database populated</p>"
+    return "<p3>Hello</p3>"
 
 @app.route('/test')
 def test():
-    # engineering = DepartmentModel(name='Engineering')
     medical = DepartmentModel(name='Medical')
     medical.department_id = 3
-    # print(medical.department_id)
     db_session.add(medical)
-    # tommy = EmployeeModel(name='tommy')
-    # db_session.add(tommy)
     manager = RoleModel(name='manager', department_id=medical.department_id)
     db_session.add(manager)
     db_session.commit()
@@ -66,18 +49,25 @@ def get_all_departments():
 
     return payload
 
-@app.route('/output-departments')
+@app.route('/departments')
 def output_departments():
-    payload = get_all_departments()
-    # payload['departments'][1]['string']
-    return payload
+    try:
+        departments = DepartmentModel.query.all()
+        response = {
+            'success': True,
+            'departments': departments.to_dict()
+        }
+    except Exception as error:
+        response = {
+            'success': False,
+            'error': [str(error)]
+        }
+    return response
 
-@app.route('/get-engineer')
+@app.route('/engineer/<int:employee_id>')
 def get_engineer(employee_id: int):
     try:
         engineers = EmployeeModel.query.get(employee_id).to_dict()
-        print('engineers: ', engineers)
-
         response = {
             'success': True,
             'engineers': engineers
@@ -92,7 +82,8 @@ def get_engineer(employee_id: int):
     return response
 
 @app.route('/get-all-employees')
-def all_employees():
+def get_all_employees():
+    '''Retrieving all employees'''
     try: 
         employees = [employee.to_dict() for employee in EmployeeModel.query.all()]
         response = {
@@ -107,10 +98,21 @@ def all_employees():
 
     return response
 
-@app.route('/output')
-def output_engineers():
-    response = get_engineer(1)
-    print('response: ', response)
+@app.route('/department/<int:department_id>')
+def get_department(department_id):
+    '''Retrieving a specific department by department_id using GraphQL'''
+    try:
+        department = DepartmentModel.query.get(department_id).to_dict()
+        response = {
+            'success': True,
+            'department': department
+        }
+    except Exception as error:
+        response = {
+            'success': False,
+            'error': [str(error)]
+        }
+
     return response
 
 @app.teardown_appcontext

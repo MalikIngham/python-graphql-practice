@@ -28,9 +28,15 @@ def init_db():
     hr = Department(name="Human Resources")
     db_session.add(hr)
 
+    recruiter = Role(name='Recruiter', department=hr)
+    db_session.add(recruiter)
+
+    leadership = Department(name="Leadership")
+    db_session.add(leadership)
+
     manager = Role(name="manager")
     db_session.add(manager)
-    engineer = Role(name="engineer")
+    engineer = Role(name="engineer", department=leadership)
     db_session.add(engineer)
 
     peter = Employee(name="Peter", department=engineering, role=engineer, role_id=engineer.role_id)

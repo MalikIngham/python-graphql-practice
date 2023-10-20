@@ -3,3 +3,7 @@
 .database.sqlite3
 .models/__pycache__
 .routes/__pycache__
+__pycache__
+database.sqlite3
+models
+routes/__pycache__

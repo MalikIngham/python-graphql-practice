@@ -21,18 +21,45 @@ app.add_url_rule(
 
 @app.route('/')
 def hello():
+    print('hello')
+    engineering = models.Department(name='Engineering')
+    db_session.add(engineering)
+    db_session.commit()
+    departments = models.Department.query.all()
+    
+    employee = models.Employee(name='Candace', department_id=engineering.department_id)
+    db_session.add(employee)
+    db_session.commit()
+
+    roles = models.Role.query.all()
+    for role in roles:
+        print('role department id: ',role.department_id)
+
+    # tammy = models.Employee()
+    # tammy.name='tammy'
+    # tammy.department_id = 1
+    # tammy.role_id = 1
+
+    # db_session.add(tammy)
+    # db_session.commit()
+    employees = models.Employee.query.all()
+    for empl in employees:
+        print('employee: ', empl.name, empl.employee_id, empl.department_id, empl.department.name)
     return "<p>Database populated</p>"
 
 @app.route('/test')
 def test():
     # engineering = DepartmentModel(name='Engineering')
     medical = DepartmentModel(name='Medical')
+    medical.department_id = 3
+    # print(medical.department_id)
     db_session.add(medical)
-    tommy = EmployeeModel(name='tommy')
-    db_session.add(tommy)
-    manager = RoleModel(name='manager', department_id=1)
+    # tommy = EmployeeModel(name='tommy')
+    # db_session.add(tommy)
+    manager = RoleModel(name='manager', department_id=medical.department_id)
     db_session.add(manager)
     db_session.commit()
+
     return 'TEST'
 
 @app.route('/get-all-departments')
@@ -105,4 +132,6 @@ def shutdown_session(exception=None):
 
 if __name__ == '__main__':
     init_db()
+    departments = models.Department.query.all()
+    print(departments)
     app.run(debug=True)

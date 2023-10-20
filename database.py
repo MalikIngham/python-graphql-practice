@@ -1,3 +1,4 @@
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -8,6 +9,8 @@ db_session = scoped_session(
 )
 Base = declarative_base()
 Base.query = db_session.query_property()
+
+db = SQLAlchemy()
 
 
 def init_db():
@@ -30,10 +33,15 @@ def init_db():
     engineer = Role(name="engineer")
     db_session.add(engineer)
 
-    peter = Employee(name="Peter", department=[engineering], role=[engineer])
+    print('before peter')
+
+    peter = Employee(name="Peter", department=engineering.department_id, role=engineer.role_id)
     db_session.add(peter)
-    roy = Employee(name="Roy", department=[engineering], role=[engineer])
+    print(engineering.department_id)
+    roy = Employee(name="Roy", department=engineering.department_id, role=engineer.role_id)
     db_session.add(roy)
-    tracy = Employee(name="Tracy", department=[hr], role=[manager])
+    tracy = Employee(name="Tracy", department=hr.department_id, role=manager.role_id)
+    print(tracy)
     db_session.add(tracy)
-    db_session.commit()
+    # db.session.commit()
+    print('finish commit')
